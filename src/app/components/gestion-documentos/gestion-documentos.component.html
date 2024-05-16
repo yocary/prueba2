@@ -1,0 +1,326 @@
+<div class="col-11 mx-auto center-component main-conteiner">
+  <div class="card mx-auto bg-light">
+    <div class="container bg-white col-11 rounded mt-3">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h1
+            class="font-weight-bold"
+            style="font-size: 25px; color: #2b317f"
+            mat-dialog-title
+          >
+            Documentitos
+          </h1>
+        </div>
+      </div>
+      
+      <form [formGroup]="grupoOpciones">
+
+   
+        <div class="col-sm">
+          <mat-form-field appearance="outline" class="col-sm">
+            <mat-label>*Documentos digitalizados</mat-label>
+            <mat-select
+              formControlName="opciones">
+              <mat-option
+              *ngFor="let item of catalogoOpciones"
+              [value]="item.name"
+            >
+              {{ item.name }}
+            </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+    <hr>
+    <br>
+    </form>
+      <div class="row justify-content-center mt-2">
+        <button mat-raised-button class="btn" (click)="consultarOpciones()" [disabled]="!grupoOpciones.get('opciones')?.value" >
+          <i class="fa fa-angle-left mr-2"></i>
+          CONSULTAR
+        </button>
+      </div>
+
+      <br>
+
+      <div class="row" *ngIf="mostrarCarga">
+        <div class="col-12 text-center">
+          <h1
+            class="font-weight-bold"
+            style="font-size: 25px; color: #2b317f"
+            mat-dialog-title
+          >
+            Carga de Documentos Digitalizados
+          </h1>
+        </div>
+      </div>
+
+      <div *ngIf="mostrarCarga">
+        <form [formGroup]="formCarga">
+          <div class="item">
+            <div class="item2">
+              <mat-form-field class="col" appearance="outline">
+                <mat-label>Nombre Documento </mat-label>
+                <input
+                  matInput
+                  placeholder="Nombre Documento"
+                  formControlName="nombreDoc"
+                  required
+                />
+                <mat-error
+                  *ngIf="
+                    this.formCarga.controls.nombreDoc.dirty &&
+                    this.formCarga.controls.nombreDoc.hasError('required')
+                  "
+                  >Este campo es obligatorio
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="item2"  *ngIf="mostrarCarga">
+              <mat-form-field class="col" appearance="outline">
+                <mat-label> Fecha de elaboración del documento</mat-label>
+                <input
+                  matInput
+                  type="date"
+                  placeholder="dd/mm/aaaa"
+                  formControlName="fechaElaboracion"
+                  required
+                />
+                <mat-error
+                  *ngIf="
+                    this.formCarga.controls.fechaElaboracion.dirty &&
+                    this.formCarga.controls.fechaElaboracion.hasError('required')
+                  "
+                  >Este campo es Obligatorio</mat-error
+                >
+              </mat-form-field>
+            </div>
+
+            <div class="item2"  *ngIf="mostrarCarga">
+              <mat-form-field class="col" appearance="outline">
+                <mat-label> Fecha de ingreso al sistema</mat-label>
+                <input
+                  matInput
+                  type="date"
+                  placeholder="dd/mm/aaaa"
+                  formControlName="fechaIngreso"
+                  required
+                />
+                <mat-error
+                  *ngIf="
+                    this.formCarga.controls.fechaIngreso.dirty &&
+                    this.formCarga.controls.fechaIngreso.hasError('required')
+                  "
+                  >Este campo es Obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="item2"  *ngIf="mostrarCarga">
+              <mat-form-field class="col" appearance="outline">
+                <mat-label>Propietario del documento </mat-label>
+                <input
+                  matInput
+                  placeholder="Propietario del documento"
+                  formControlName="propietario"
+                  required
+                />
+                <mat-error
+                  *ngIf="
+                    this.formCarga.controls.propietario.dirty &&
+                    this.formCarga.controls.propietario.hasError('required')
+                  "
+                  >Este campo es obligatorio
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+
+      <div *ngIf="mostrarCarga">
+
+
+        
+
+        <div *ngIf="currentFile" class="progress">
+          <div
+            class="progress-bar progress-bar-info progress-bar-striped"
+            role="progressbar"
+            attr.aria-valuenow="{{ progress }}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [ngStyle]="{ width: progress + '%' }"
+          >
+            {{ progress }}%
+          </div>
+        </div>
+        
+        <label class="btn btn-default">
+            <input type="file" (change)="selectFile($event)">
+        
+        
+          </label>
+
+    
+      </div>
+
+
+
+
+      <div class="col-12 text-left"  *ngIf="mostrarCarga">
+        <h1
+          class="font-weight-bold"
+          style="font-size: 12px; color: #7f2b2b"
+          mat-dialog-title
+        >
+          "Está operación no tiene retorno usted registrara el documento en este momento"
+        </h1>
+      </div>
+
+      <div class="row justify-content-center mt-2" *ngIf="mostrarCarga">
+        <button mat-raised-button class="btn" (click)="limpiar()">
+          <i class="fa fa-angle-left mr-2"></i>
+          Limpiar
+        </button>
+        &nbsp;&nbsp;
+        <button mat-raised-button class="btn" (click)="guardar()"
+        [disabled]="this.formCarga.invalid">
+          <i class="fa fa-angle-left mr-2"></i>
+          Cargar Documento
+        </button>
+      </div>
+      <br>
+
+      <div class="row"  *ngIf="mostrarDescarga">
+        <div class="col-12 text-center">
+          <h1
+            class="font-weight-bold"
+            style="font-size: 25px; color: #2b317f"
+            mat-dialog-title
+          >
+            Descarga de Documentos Digitalizados Sección A
+          </h1>
+        </div>
+      </div>
+
+
+      <div >
+        <form [formGroup]="consultarDescarga" *ngIf="mostrarDescarga">
+          <div class="item">
+            <div class="item2">
+              <mat-form-field class="col" appearance="outline">
+                <mat-label>Propietario </mat-label>
+                <input
+                  matInput
+                  placeholder="Propietario"
+                  formControlName="propietario"
+                  required
+                />
+                <mat-error
+                  *ngIf="
+                    this.consultarDescarga.controls.propietario.dirty &&
+                    this.consultarDescarga.controls.propietario.hasError('required')
+                  "
+                  >Este campo es obligatorio
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="item2" *ngIf="mostrarDescarga">
+              <mat-form-field class="col" appearance="outline">
+                <mat-label> Fecha inicio</mat-label>
+                <input
+                  matInput
+                  type="date"
+                  placeholder="aaaa-mm-dd"
+                  formControlName="fechaInicio"
+                  required
+                />
+                <mat-error
+                  *ngIf="
+                    this.consultarDescarga.controls.fechaInicio.dirty &&
+                    this.consultarDescarga.controls.fechaInicio.hasError('required')
+                  "
+                  >Este campo es Obligatorio</mat-error
+                >
+              </mat-form-field>
+            </div>
+
+            <div class="item2" *ngIf="mostrarDescarga">
+              <mat-form-field class="col" appearance="outline">
+                <mat-label> Fecha fin</mat-label>
+                <input
+                  matInput
+                  type="date"
+                  placeholder="aaa-mm-dd"
+                  formControlName="fechaFin"
+                  required
+                />
+                <mat-error
+                  *ngIf="
+                    this.consultarDescarga.controls.fechaFin.dirty &&
+                    this.consultarDescarga.controls.fechaFin.hasError('required')
+                  "
+                  >Este campo es Obligatorio</mat-error
+                >
+              </mat-form-field>
+            </div>
+
+          </div>
+        </form>
+        <div class="row justify-content-center mt-2" *ngIf="mostrarDescarga">
+          <button mat-raised-button class="btn" (click)="obtenerDocumentos()" 
+          [disabled]="this.consultarDescarga.invalid"
+          >
+            <i class="fa fa-angle-left mr-2"></i>
+            CONSULTAR
+          </button>
+        </div>
+<br>
+
+<div class="col-12 text-left" *ngIf="mostrarConsultaDescargas">
+  <h1
+    class="font-weight-bold"
+    style="font-size: 15px; color: #2b317f"
+    mat-dialog-title
+  >
+    Sección A
+  </h1>
+</div>
+
+<table border="2" *ngIf="mostrarConsultaDescargas">
+  <tbody>
+      <tr>
+        <td><b>Nombre Documento</b></td>
+        <td><b>Fecha elaboración documentos</b></td>
+        <td><b>Fecha de ingreso al sistema</b></td>
+        <td><b>Propietario del documento</b></td>
+        <td><b>Descargar</b></td>
+      </tr>
+      <tr *ngFor = "let documento of documentos">
+        <td>{{documento.nombreDocumento}}</td>
+        <td>{{documento.fechaElaboracion}}</td>
+        <td>{{documento.fechaIngreso}}</td>
+        <td>{{documento.propietario}}</td>
+        <td><a href="{{ documento.Descargar }}">{{ documento.doc }}</a></td>
+      </tr>
+        
+      
+  </tbody>
+</table>
+
+<br>
+<br>
+      </div>
+
+    </div>
+    <br>
+  </div>
+
+</div>
+
+
+
+
